@@ -15,10 +15,24 @@ defmodule Cards do
     end
   end
 
+  @doc """
+    Suffle a deck
+  """
   def shuffle(deck) do 
     Enum.shuffle(deck)
   end
 
+
+  @doc """
+    Determines whether a deck contains a given cards
+
+  ## Examples
+      iex> deck = Cards.create_deck
+      iex> Cards.contains?(deck, "Ace of Spades")
+      true
+      iex> Cards.contains?(deck, "Eleven of Spades")
+      false
+  """
   def contains?(deck, card) do 
     Enum.member?(deck, card)
   end
@@ -30,7 +44,7 @@ defmodule Cards do
   ## Examples 
 
       iex> deck =  Cards.create_deck
-      iex> { hand, deck } = Cards.deal(deck, 1)
+      iex> { hand, _deck } = Cards.deal(deck, 1)
       iex> hand 
       ["Ace of Spades"]
   """
@@ -38,10 +52,30 @@ defmodule Cards do
     Enum.split(deck, hand_size)
   end
 
+  @doc """
+    Save a deck into a file named `filename`
+
+  ## Examples 
+
+      iex> Cards.save(Cards.create_deck, "my_deck")
+      :ok
+  """
   def save(deck, filename) do
     File.write(filename, :erlang.term_to_binary(deck))
   end
 
+  @doc """
+    Load a deck from a file previosly saved with Cards.load. 
+    If `filename` doesn't exist, it returns an error.
+
+  ## Examples
+
+      iex> Cards.save(["Ace of Spades"], "my_deck")
+      iex> Cards.load("my_deck")
+      ["Ace of Spades"]
+      iex> Cards.load("an_other_deck")
+      "File 'an_other_deck' does not exist"
+  """
   def load(filename) do 
     case File.read(filename) do 
       {:ok, binary} -> :erlang.binary_to_term(binary)
@@ -50,6 +84,9 @@ defmodule Cards do
     end 
   end
 
+  @doc """
+    Creates a deck, suffles it and deals a hand of cards 
+  """
   def create_hand(hand_size) do 
     Cards.create_deck 
     |> Cards.shuffle 
